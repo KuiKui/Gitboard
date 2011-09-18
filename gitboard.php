@@ -1,4 +1,7 @@
 <?php
+//---------------
+// Default values
+//---------------
 $version = '0.1';
 $gitDir = $_SERVER["PWD"];
 $iteration = 15;
@@ -8,16 +11,11 @@ $nbCommits = 10;
 // Options
 //--------
 $options = getopt('d::i::c::h::v::');
+if(isset($options['h'])) {usage(); exit(); }
+if(isset($options['v'])) {printf("%s\n", $version); exit(); }
 if(isset($options['d']) && $options['d']!==false) {$gitDir = $options['d'];}
 if(isset($options['i']) && $options['i']!==false && is_numeric($options['i'])) {$iteration = $options['i'];}
 if(isset($options['c']) && $options['c']!==false && is_numeric($options['c'])) {$nbCommits = $options['c'];}
-if(isset($options['h'])) {printf("Gitboard %s : simple git dashboard.
--d <project directory> : like --git-dir\n-i : number of last days/hours/minutes
--c : number of last commits
--h : this help
--v : version
-", $version); exit(0); }
-if(isset($options['v'])) {printf("%s\n", $version); exit(0); }
 
 //--------
 // Compute
@@ -67,8 +65,7 @@ function getCurrentBranch($gitDir)
   exec($cmd, $branch);
   if(count($branch)==0)
   {
-    printf("No branch selected in %s", $gitDir);
-    exit(0);
+    exit('No branch selected in '.$gitDir);
   }
   return $branch[0];
 }
@@ -146,6 +143,17 @@ function getBackwardInfos($commits, $displayPattern, $pattern, $timeUnit, $itera
   }
   
   return $infos; 
+}
+
+function usage()
+{
+  printf("Gitboard : simple git dashboard.
+-d <project directory> : like --git-dir
+-i : number of last days/hours/minutes
+-c : number of last commits
+-h : this help
+-v : version
+");
 }
 
 function limitText($str, $limit)
