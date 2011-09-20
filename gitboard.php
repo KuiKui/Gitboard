@@ -40,9 +40,19 @@ printf("\n");
 // Display time-report
 printf("\033[47;30m%-23s\033[0m%-12s\033[47;30m%-23s\033[0m%-12s\033[47;30m%-23s\033[0m\n", "Last $iteration days", "", "Last $iteration hours", "", "Last $iteration minutes");
 printf("%-8s %-8s %-16s %-8s %-8s %-16s %-8s %-8s %s\n", "Date", "Commits", "Files", "Hour", "Commits", "Files", "Hour", "Commits", "Files");
+
 for($i = 0; $i < $iteration; $i++)
 {
-  printf("%-8s %-8s %-16s %-8s %-8s %-16s %-8s %-8s %s\n", $lastDaysInfos[$i]['displayDate'], $lastDaysInfos[$i]['nb-commits'], $lastDaysInfos[$i]['nb-files'], $lastHoursInfos[$i]['displayDate'], $lastHoursInfos[$i]['nb-commits'], $lastHoursInfos[$i]['nb-files'], $lastMinutesInfos[$i]['displayDate'], $lastMinutesInfos[$i]['nb-commits'], $lastMinutesInfos[$i]['nb-files']);
+  displayValue($lastDaysInfos[$i]['displayDate'], 9);
+  displayValue($lastDaysInfos[$i]['nb-commits'], 9, "0;33", true);
+  displayValue($lastDaysInfos[$i]['nb-files'], 17, "0;33", true);
+  displayValue($lastHoursInfos[$i]['displayDate'], 9);
+  displayValue($lastHoursInfos[$i]['nb-commits'], 9, "0;33", true);
+  displayValue($lastHoursInfos[$i]['nb-files'], 17, "0;33", true);
+  displayValue($lastMinutesInfos[$i]['displayDate'], 9);
+  displayValue($lastMinutesInfos[$i]['nb-commits'], 9, "0;33", true);
+  displayValue($lastMinutesInfos[$i]['nb-files'], 0, "0;33", true);
+  printf("\n");
 }
 printf("\n");
 
@@ -51,7 +61,12 @@ printf("\033[47;30m%-113s%-9s\033[0m\n", "Last $nbCommits commits (within the la
 for($i = 0; $i < $nbCommits; $i++)
 {
   if(!isset($commits[$i])) continue;
-  printf("%-16s %-16s %-7s \033[0;36m%-70s\033[0m %-9s\n", date('d/m/y H\hi', strtotime($commits[$i]['date'])), limitText($commits[$i]['name'], 16), $commits[$i]['hash'], limitText($commits[$i]['message'], 70), count($commits[$i]['files']));
+  displayValue(date('d/m/y H\hi', strtotime($commits[$i]['date'])), 17, "0;33", false, date('d/m/y'));
+  displayValue(limitText($commits[$i]['name'], 16), 17);
+  displayValue($commits[$i]['hash'], 8);
+  displayValue(limitText($commits[$i]['message'], 70), 71, "0;36");
+  displayValue(count($commits[$i]['files']), 10);
+  printf("\n");
 }
 printf("\n");
 
@@ -163,4 +178,29 @@ function limitText($str, $limit)
     return $str;
   }
   return substr($str, 0, $limit - 3).'...';
+}
+
+function displayValue($value, $padding = 0, $color = null, $onlyIfPositive = false, $onlyIfMatch = null)
+{
+  $positive = (is_numeric($value) && $value > 0);
+  $displayColor = (!is_null($color) && (!$onlyIfPositive || ($onlyIfPositive && $positive)) && (is_null($onlyIfMatch) || (!is_null($onlyIfMatch) && strpos($value, $onlyIfMatch) !== false)));
+
+  if($displayColor)
+  {
+    printf("\033[".$color."m");
+  }
+
+  if($padding > 0)
+  {
+    printf("%-".$padding."s", $value);
+  }
+  else
+  {
+    printf("%s", $value);
+  }
+
+  if($displayColor)
+  {
+    printf("\033[0m");
+  }
 }
