@@ -25,6 +25,7 @@ $commits = getCommits($iteration, $gitDir);
 $lastDaysInfos = getBackwardInfos($commits, 'd/m', 'Y-m-d', 'days', $iteration);
 $lastHoursInfos = getBackwardInfos($commits, 'H\h', 'Y-m-d H:', 'hours', $iteration);
 $lastMinutesInfos = getBackwardInfos($commits, 'H\hi', 'Y-m-d H:i:', 'minutes', $iteration);
+$noMergedBranchesInfos = getNoMergedBranchesInfos($gitDir);
 
 //--------
 // Display
@@ -70,6 +71,31 @@ for($i = 0; $i < $nbCommits; $i++)
 }
 printf("\n");
 
+// Display no merger branches infos
+if(count($noMergedBranchesInfos) > 0)
+{
+  printf("\033[47;30m%-20s %-15s %-84s\033[0m\n", "No merged branches", "Current ahead", "Branch gap");
+  printf("%-20s %-7s %-7s %-7s %-7s %s\n", "", "Commits", "Files", "Commits", "Files", "Last commit");
+  
+  foreach($noMergedBranchesInfos as $name => $noMergedBranche)
+  {
+    displayValue(limitText($name, 20), 21);
+    displayValue($noMergedBranche['currentBranchAheadCommits'], 8, "0;33", true);
+    displayValue($noMergedBranche['currentBranchAheadFiles'], 8, "0;33", true);
+    displayValue($noMergedBranche['distantBranchAheadCommits'], 8, "0;33", true);
+    displayValue($noMergedBranche['distantBranchAheadFiles'], 8, "0;33", true);
+    if(isset($noMergedBranche['distantBranchAheadLastCommit']))
+    {
+      displayValue(date('d/m/y H\hi', strtotime($noMergedBranche['distantBranchAheadLastCommit']['date'])), 17, "0;33", false, date('d/m/y'));
+      displayValue(limitText($noMergedBranche['distantBranchAheadLastCommit']['name'], 16), 17);
+      displayValue($noMergedBranche['distantBranchAheadLastCommit']['hash'], 8);
+      displayValue(limitText($noMergedBranche['distantBranchAheadLastCommit']['message'], 26), 26, "0;36");
+    }
+    printf("\n");
+  }
+  printf("\n");
+}
+
 //----------
 // Functions
 //----------
@@ -107,15 +133,7 @@ function getCommits($nbDays, $gitDir)
       {
         $commits[] = $commit;
       }
-      
-      $elements = explode($separator, $line);
-      $commit = array(
-        'date' => date('Y-m-d H:i:s', strtotime($elements[0])),
-        'name' => $elements[1],
-        'hash' => $elements[2],
-        'message' => $elements[3],
-        'files' => array()
-      );
+      $commit = getCommitFromLine($line, $separator);
     }
     else
     {
@@ -158,6 +176,65 @@ function getBackwardInfos($commits, $displayPattern, $pattern, $timeUnit, $itera
   }
   
   return $infos; 
+}
+
+function getNoMergedBranchesInfos($gitDir)
+{
+  $noMerdegBranchesInfos = array();
+
+  $cmd = sprintf('git --git-dir="%s/.git" branch --no-merged | grep -v "*"', $gitDir);
+  exec($cmd, $results);
+
+  foreach($results as $branch)
+  {
+    $branch = trim($branch);
+    $infos = array();
+
+    $cmd = sprintf('git --git-dir="%s/.git" shortlog %s..HEAD | grep -c "^[ ]" | sed "s/ //g"', $gitDir, $branch);
+    exec($cmd, $infos);
+
+    $cmd = sprintf('git --git-dir="%s/.git" log --numstat --format="%%aD %%ar %%ci%%x09" %s..HEAD | grep -c "^[0-9]" | sed "s/ //g"', $gitDir, $branch);
+    exec($cmd, $infos);
+
+    $cmd = sprintf('git --git-dir="%s/.git" shortlog HEAD..%s | grep -c "^[ ]" | sed "s/ //g"', $gitDir, $branch);
+    exec($cmd, $infos);
+
+    $cmd = sprintf('git --git-dir="%s/.git" log --numstat --format="%%aD %%ar %%ci%%x09" HEAD..%s | grep -c "^[0-9]" | sed "s/ //g"', $gitDir, $branch);
+    exec($cmd, $infos);
+
+    $separator = '°';
+    $cmd = sprintf('git --git-dir="%s/.git" log -n 1 --format="%%ci%s%%cn%s%%h%s%%s" %s | sed "s/:[0-9]\{2\} +[0-9]\{4\}//g"', $gitDir, $separator, $separator, $separator, $branch);
+    exec($cmd, $infos);
+
+    if(count($infos) != 5)
+    {
+      continue;
+    }
+
+    $noMerdegBranchesInfos[$branch] = array(
+      'currentBranchAheadCommits' => $infos[0],
+      'currentBranchAheadFiles' => $infos[1],
+      'distantBranchAheadCommits' => $infos[2],
+      'distantBranchAheadFiles' => $infos[3],
+      'distantBranchAheadLastCommit' => getCommitFromLine($infos[4], $separator)
+    );
+  }
+
+  return $noMerdegBranchesInfos;
+}
+
+function getCommitFromLine($line, $separator)
+{
+  $elements = explode($separator, $line);
+  $commit = array(
+    'date' => date('Y-m-d H:i:s', strtotime($elements[0])),
+    'name' => $elements[1],
+    'hash' => $elements[2],
+    'message' => $elements[3],
+    'files' => array()
+  );
+
+  return $commit;
 }
 
 function usage()
