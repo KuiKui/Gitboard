@@ -16,16 +16,17 @@ Options
 -c : number of last commits  
 -h : help  
 -v : version  
+--no-stats : no statistic  
 
 Example
 -------
 
-> php gitboard.php -d=../node -i=15 -c=10
+> php gitboard.php -d=../node
 
-![Gitboard](https://lh4.googleusercontent.com/-lUl_qrNCTac/TnXkrPJeUgI/AAAAAAAAAuM/pRi6lpbbGQs/s640/Gitboard.png "Gitboard example")
+![Gitboard](https://lh5.googleusercontent.com/-A2ZveUUbwCc/Tn3MwQDyzDI/AAAAAAAAAuc/ynkxbkdjyzs/s640/Gitboard.png "Gitboard example")
 
 Alias (git config file)
 -----------------------
 
 > [alias]  
-> board = "!sh -c 'php /path/to/gitboard/gitboard.php -c=20'"
+> board = "!sh -c 'php /path/to/gitboard/gitboard.php'"
