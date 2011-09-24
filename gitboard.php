@@ -6,16 +6,18 @@ $version = '0.1';
 $gitDir = $_SERVER["PWD"];
 $iteration = 15;
 $nbCommits = 10;
+$displayStats = true;
 
 //--------
 // Options
 //--------
-$options = getopt('d::i::c::h::v::');
+$options = getopt('d::i::c::h::v::', array('no-stats::'));
 if(isset($options['h'])) {usage(); exit(); }
 if(isset($options['v'])) {printf("%s\n", $version); exit(); }
 if(isset($options['d']) && $options['d']!==false) {$gitDir = $options['d'];}
 if(isset($options['i']) && $options['i']!==false && is_numeric($options['i'])) {$iteration = $options['i'];}
 if(isset($options['c']) && $options['c']!==false && is_numeric($options['c'])) {$nbCommits = $options['c'];}
+if(isset($options['no-stats'])) {$displayStats = false;}
 
 //--------
 // Compute
@@ -26,6 +28,7 @@ $lastDaysInfos = getBackwardInfos($commits, 'd/m', 'Y-m-d', 'days', $iteration);
 $lastHoursInfos = getBackwardInfos($commits, 'H\h', 'Y-m-d H:', 'hours', $iteration);
 $lastMinutesInfos = getBackwardInfos($commits, 'H\hi', 'Y-m-d H:i:', 'minutes', $iteration);
 $noMergedBranchesInfos = getNoMergedBranchesInfos($gitDir);
+$stats = ($displayStats) ? getStats($commits) : array();
 
 //--------
 // Display
@@ -66,7 +69,7 @@ for($i = 0; $i < $nbCommits; $i++)
   displayValue(limitText($commits[$i]['name'], 16), 17);
   displayValue($commits[$i]['hash'], 8);
   displayValue(limitText($commits[$i]['message'], 70), 71, "0;36");
-  displayValue(count($commits[$i]['files']), 10);
+  displayValue(count($commits[$i]['files']), 9);
   printf("\n");
 }
 printf("\n");
@@ -91,6 +94,23 @@ if(count($noMergedBranchesInfos) > 0)
       displayValue($noMergedBranche['distantBranchAheadLastCommit']['hash'], 8);
       displayValue(limitText($noMergedBranche['distantBranchAheadLastCommit']['message'], 26), 26, "0;36");
     }
+    printf("\n");
+  }
+  printf("\n");
+}
+
+// Display stats infos
+if(count($stats))
+{
+  printf("\033[47;30m%-122s\033[0m\n", "Stats for the last ".count($commits)." commits (within the last $iteration days)");
+  printf("%-20s %-20s %s\n", "", "Commits", "Files");
+  foreach($stats as $committer => $stat)
+  {
+    displayValue(limitText($committer, 20), 21);
+    displayValue($stat['totalCommits'], 8, "0;33");
+    displayValue($stat['percentCommits'].'%', 13);
+    displayValue($stat['totalFiles'], 8, "0;33");
+    displayValue($stat['percentFiles'].'%', 13);
     printf("\n");
   }
   printf("\n");
@@ -223,6 +243,39 @@ function getNoMergedBranchesInfos($gitDir)
   return $noMerdegBranchesInfos;
 }
 
+function getStats($commits)
+{
+  $stats = array();
+  $nbCommits = 0;
+  $nbFiles = 0;
+
+  foreach($commits as $commit)
+  {
+    if(!isset($stats[$commit['name']]))
+    {
+      $stats[$commit['name']] = array(
+        'totalCommits' => 0,
+        'percentCommits' => 0,
+        'totalFiles' => 0,
+        'percentFiles' => 0
+      );
+    }
+
+    $stats[$commit['name']]['totalCommits'] += 1;
+    $stats[$commit['name']]['totalFiles'] += count($commit['files']);
+    $nbCommits++;
+    $nbFiles += count($commit['files']);
+  }
+
+  foreach($stats as $key => $stat)
+  {
+    $stats[$key]['percentCommits'] = round($stat['totalCommits'] * 100 / $nbCommits);
+    $stats[$key]['percentFiles'] = round($stat['totalFiles'] * 100 / $nbFiles);
+  }
+
+  return $stats;
+}
+
 function getCommitFromLine($line, $separator)
 {
   $elements = explode($separator, $line);
@@ -245,6 +298,7 @@ function usage()
 -c : number of last commits
 -h : this help
 -v : version
+--no-stats : no statistic
 ");
 }
 
