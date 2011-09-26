@@ -323,7 +323,7 @@ function displayValue($value, $padding = 0, $color = null, $onlyIfPositive = fal
 
   if($padding > 0)
   {
-    printf("%-".$padding."s", $value);
+    echo utf_8_sprintf("%-".$padding."s", $value);
   }
   else
   {
@@ -334,4 +334,15 @@ function displayValue($value, $padding = 0, $color = null, $onlyIfPositive = fal
   {
     printf("\033[0m");
   }
+}
+
+function utf_8_sprintf ($format)
+{
+  $args = func_get_args();
+
+  for ($i = 1; $i < count($args); $i++) {
+    $args [$i] = iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $args [$i]);
+  }
+
+  return iconv('ISO-8859-1', 'UTF-8', call_user_func_array('sprintf', $args));
 }
