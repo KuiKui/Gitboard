@@ -11,13 +11,13 @@ $displayStats = true;
 //--------
 // Options
 //--------
-$options = getopt('d::i::c::h::v::', array('no-stats::'));
+$options = pflow_getopt( $argv, 'd:i:c:h:v:no-stat');
 if(isset($options['h'])) {usage(); exit(); }
 if(isset($options['v'])) {printf("%s\n", $version); exit(); }
 if(isset($options['d']) && $options['d']!==false) {$gitDir = $options['d'];}
 if(isset($options['i']) && $options['i']!==false && is_numeric($options['i'])) {$iteration = $options['i'];}
 if(isset($options['c']) && $options['c']!==false && is_numeric($options['c'])) {$nbCommits = $options['c'];}
-if(isset($options['no-stats'])) {$displayStats = false;}
+if(isset($options['no-stat'])) {$displayStats = false;}
 
 //--------
 // Compute
@@ -345,4 +345,29 @@ function utf_8_sprintf ($format)
   }
 
   return iconv('ISO-8859-1', 'UTF-8', call_user_func_array('sprintf', $args));
+}
+
+function pflow_getopt($argv, $def)
+{
+  $options = array();
+  $args = preg_split('/[ |=]+/', implode(' ', $argv));
+
+  foreach($args as $i => $arg)
+  {
+    $option = trim($arg, '-');
+
+    if (false !== $pos = strpos($def, $option))
+    {
+      if (substr($def, $pos + 1, 1) == ':')
+      {
+        $options[$option] = $args[$i + 1];
+      }
+      else
+      {
+        $options[$option] = true;
+      }
+    }
+  }
+
+  return $options;
 }
