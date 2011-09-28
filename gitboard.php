@@ -9,6 +9,15 @@ $nbCommits = 10;
 $displayNoMergedBranches = true;
 $displayStats = true;
 
+
+//-------------------
+// Check requirements
+//-------------------
+if (!extension_loaded('iconv'))
+{
+  exit('iconv extension not loaded' . PHP_EOL);
+}
+
 //--------
 // Options
 //--------
