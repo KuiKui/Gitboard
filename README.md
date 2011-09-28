@@ -1,7 +1,7 @@
 Gitboard
 --------
 
-Simple git dashboard.
+Simple dashboard for a quick overview of Git projects
 
 Usage
 -----
