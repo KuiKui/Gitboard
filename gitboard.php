@@ -105,14 +105,15 @@ if(count($noMergedBranchesInfos) > 0)
 if(count($stats))
 {
   printf("\033[47;30m%-122s\033[0m\n", "Stats for the last ".count($commits)." commits (within the last $iteration days)");
-  printf("%-20s %-20s %s\n", "", "Commits", "Files");
+  printf("%-20s %-20s %-20s %s\n", "", "Commits", "Files", "");
   foreach($stats as $committer => $stat)
   {
-    displayValue(limitText($committer, 20), 21);
+    displayValue(limitText($stat['name'], 20), 21);
     displayValue($stat['totalCommits'], 8, "0;33");
     displayValue($stat['percentCommits'].'%', 13);
     displayValue($stat['totalFiles'], 8, "0;33");
     displayValue($stat['percentFiles'].'%', 13);
+    displayValue(limitText($committer, 39), 40);
     printf("\n");
   }
   printf("\n");
@@ -137,9 +138,9 @@ function getCommits($nbDays, $gitDir)
 {
   $separator = '°';
   $from = date('Y-m-d 00:00:00', strtotime(sprintf("-%s days", $nbDays - 1)));
-  $cmd = sprintf('git --git-dir="%s/.git" log --no-merges --ignore-all-space --since="%s" --format="%%ci%s%%cn%s%%h%s%%s" --numstat', $gitDir, $from, $separator, $separator, $separator);
+  $cmd = sprintf('git --git-dir="%s/.git" log --no-merges --ignore-all-space --since="%s" --format="%%ci%s%%ce%s%%cn%s%%h%s%%s" --numstat', $gitDir, $from, $separator, $separator, $separator, $separator);
   exec($cmd, $results);
-  
+
   $commits = array();
   $commit = array();
   foreach($results as $line)
@@ -148,7 +149,6 @@ function getCommits($nbDays, $gitDir)
     {
       continue;
     }
-    
     if(strpos($line, $separator) !== false)
     {
       if(count($commit) > 0)
@@ -225,7 +225,7 @@ function getNoMergedBranchesInfos($gitDir)
     exec($cmd, $infos);
 
     $separator = '°';
-    $cmd = sprintf('git --git-dir="%s/.git" log -n 1 --format="%%ci%s%%cn%s%%h%s%%s" %s | sed "s/:[0-9]\{2\} +[0-9]\{4\}//g"', $gitDir, $separator, $separator, $separator, $branch);
+    $cmd = sprintf('git --git-dir="%s/.git" log -n 1 --format="%%ci%s%%ce%s%%cn%s%%h%s%%s" %s | sed "s/:[0-9]\{2\} +[0-9]\{4\}//g"', $gitDir, $separator, $separator, $separator, $separator, $branch);
     exec($cmd, $infos);
 
     if(count($infos) != 5)
@@ -253,9 +253,10 @@ function getStats($commits)
 
   foreach($commits as $commit)
   {
-    if(!isset($stats[$commit['name']]))
+    if(!isset($stats[$commit['email']]))
     {
-      $stats[$commit['name']] = array(
+      $stats[$commit['email']] = array(
+        'name' => $commit['name'],
         'totalCommits' => 0,
         'percentCommits' => 0,
         'totalFiles' => 0,
@@ -263,8 +264,9 @@ function getStats($commits)
       );
     }
 
-    $stats[$commit['name']]['totalCommits'] += 1;
-    $stats[$commit['name']]['totalFiles'] += count($commit['files']);
+    $stats[$commit['email']]['name'] = $commit['name'];
+    $stats[$commit['email']]['totalCommits'] += 1;
+    $stats[$commit['email']]['totalFiles'] += count($commit['files']);
     $nbCommits++;
     $nbFiles += count($commit['files']);
   }
@@ -283,9 +285,10 @@ function getCommitFromLine($line, $separator)
   $elements = explode($separator, $line);
   $commit = array(
     'date' => date('Y-m-d H:i:s', strtotime($elements[0])),
-    'name' => $elements[1],
-    'hash' => $elements[2],
-    'message' => $elements[3],
+    'email' => $elements[1],
+    'name' => $elements[2],
+    'hash' => $elements[3],
+    'message' => $elements[4],
     'files' => array()
   );
 
