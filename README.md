@@ -16,12 +16,13 @@ Options
 -c : number of last commits  
 -h : help  
 -v : version  
+--no-merged-branch : no merged branches infos  
 --no-stats : no statistic  
 
 Example
 -------
 
-> php gitboard.php -d=../node
+> php gitboard.php -d=../node --no-merged-branch
 
 ![Gitboard](https://lh5.googleusercontent.com/-A2ZveUUbwCc/Tn3MwQDyzDI/AAAAAAAAAuc/ynkxbkdjyzs/s640/Gitboard.png "Gitboard example")
 

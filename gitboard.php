@@ -6,17 +6,19 @@ $version = '0.1';
 $gitDir = $_SERVER["PWD"];
 $iteration = 15;
 $nbCommits = 10;
+$displayNoMergedBranches = true;
 $displayStats = true;
 
 //--------
 // Options
 //--------
-$options = pflow_getopt( $argv, 'd:i:c:h:v:no-stat');
+$options = pflow_getopt( $argv, 'd:i:c:h:v:no-stat:no-merged-branch');
 if(isset($options['h'])) {usage(); exit(); }
 if(isset($options['v'])) {printf("%s\n", $version); exit(); }
 if(isset($options['d']) && $options['d']!==false) {$gitDir = $options['d'];}
 if(isset($options['i']) && $options['i']!==false && is_numeric($options['i'])) {$iteration = $options['i'];}
 if(isset($options['c']) && $options['c']!==false && is_numeric($options['c'])) {$nbCommits = $options['c'];}
+if(isset($options['no-merged-branch'])) {$displayNoMergedBranches = false;}
 if(isset($options['no-stat'])) {$displayStats = false;}
 
 //--------
@@ -27,7 +29,7 @@ $commits = getCommits($iteration, $gitDir);
 $lastDaysInfos = getBackwardInfos($commits, 'd/m', 'Y-m-d', 'days', $iteration);
 $lastHoursInfos = getBackwardInfos($commits, 'H\h', 'Y-m-d H:', 'hours', $iteration);
 $lastMinutesInfos = getBackwardInfos($commits, 'H\hi', 'Y-m-d H:i:', 'minutes', $iteration);
-$noMergedBranchesInfos = getNoMergedBranchesInfos($gitDir);
+$noMergedBranchesInfos = ($displayNoMergedBranches) ? getNoMergedBranchesInfos($gitDir) : array();
 $stats = ($displayStats) ? getStats($commits) : array();
 
 //--------
@@ -298,6 +300,7 @@ function usage()
 -c : number of last commits
 -h : this help
 -v : version
+--no-merged-branch : no merged branches infos
 --no-stats : no statistic
 ");
 }
