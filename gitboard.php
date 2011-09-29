@@ -342,11 +342,17 @@ function displayValue($value, $padding = 0, $color = null, $onlyIfPositive = fal
   }
 }
 
-function utf_8_sprintf ($format)
+function utf_8_sprintf ()
 {
   $args = func_get_args();
 
-  for ($i = 1; $i < count($args); $i++) {
+  if(!extension_loaded('iconv'))
+  {
+    return call_user_func_array('sprintf', $args);
+  }
+
+  for($i = 1; $i < count($args); $i++)
+  {
     $args [$i] = iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $args [$i]);
   }
 
