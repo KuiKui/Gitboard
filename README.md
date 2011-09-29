@@ -17,7 +17,7 @@ Options
 -h : help  
 -v : version  
 --no-merged-branch : no merged branches infos  
---no-stats : no statistic  
+--no-stat : no statistic  
 
 Example
 -------
