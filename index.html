@@ -1,79 +1,60 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset='utf-8'>
+  <head>
+    <meta charset='utf-8'>
+    <title>Gitboard</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css" media="all" />
+  </head>
+  <body>
+    <a href="http://github.com/KuiKui/Gitboard"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+    <div id="container">
+      <div class="download">
+        <a href="http://github.com/KuiKui/Gitboard/zipball/master">
+          <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+        <a href="http://github.com/KuiKui/Gitboard/tarball/master">
+          <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+      </div>
+      <h1><a href="http://github.com/KuiKui/Gitboard">Gitboard</a><span class="small"> by <a href="http://github.com/KuiKui">KuiKui</a></span></h1>
+      <div class="description">Simple dashboard for a quick overview of Git projects</div>
 
-  <title>KuiKui/Gitboard @ GitHub</title>
+      <h2>Screenshot</h2>
+      <img src="https://lh5.googleusercontent.com/-A2ZveUUbwCc/Tn3MwQDyzDI/AAAAAAAAAuc/ynkxbkdjyzs/s640/Gitboard.png" alt="Gitboard" title="Gitboard example">
 
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #e53f08;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #ffffff;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #1ac0f7; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #1ac0f7; }
-    h3 { text-align: center; color: #1ac0f7; }
-    a { color: #1ac0f7; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
-</head>
+      <h2>Usage</h2>
+      <pre>php gitboard.php</pre>
+      or add this line to your git config file :
+      <pre>[alias]<br />board = "!sh -c 'php /path/to/gitboard/gitboard.php'"</pre>
+      and simply use :
+      <pre>git board</pre>
 
-<body>
-  <a href="http://github.com/KuiKui/Gitboard"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+      <h2>Options</h2>
+      <ul>
+        <li><b>-d</b> : like --git-dir</li>
+        <li><b>-i</b> : number of last days/hours/minutes</li>
+        <li><b>-c</b> : number of last commits</li>
+        <li><b>-h</b> : help</li>
+        <li><b>-v</b> : version</li>
+        <li><b>--no-merged-branch</b> : no merged branches infos</li>
+        <li><b>--no-stat</b> : no statistic</li>
+      </ul>
 
-  <div id="container">
+      <h2>Contact</h2>
+      <p>Denis Roussel (denis.roussel@gmail.com)</p>
 
-    <div class="download">
-      <a href="http://github.com/KuiKui/Gitboard/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/KuiKui/Gitboard/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+      <h2>Download</h2>
+      <p>
+        You can download this project in either
+        <a href="http://github.com/KuiKui/Gitboard/zipball/master">zip</a> or
+        <a href="http://github.com/KuiKui/Gitboard/tarball/master">tar</a> formats.
+      </p>
+      <p>You can also clone the project with <a href="http://git-scm.com">Git</a> by running:
+        <pre>$ git clone git://github.com/KuiKui/Gitboard</pre>
+      </p>
+      <div class="footer">
+        Get the source code on GitHub : <a href="http://github.com/KuiKui/Gitboard">KuiKui/Gitboard</a><br />
+        <br />
+        Theme from <a href="http://kogakure.github.com/gitweb-theme/">kogakure/gitweb-theme</a>
+      </div>
     </div>
-
-    <h1><a href="http://github.com/KuiKui/Gitboard">Gitboard</a>
-      <span class="small">by <a href="http://github.com/KuiKui">KuiKui</a></span></h1>
-
-    <div class="description">
-      Simple dashboard for a quick overview of Git projects
-    </div>
-
-    <p>Main Project Text</p><h2>Install</h2>
-<p>Installation Instructions</p>
-<h2>Authors</h2>
-<p>Denis Roussel (denis.roussel@gmail.com)<br/><br/>      </p>
-<h2>Contact</h2>
-<p>Denis Roussel (denis.roussel@gmail.com)<br/>      </p>
-
-
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/KuiKui/Gitboard/zipball/master">zip</a> or
-      <a href="http://github.com/KuiKui/Gitboard/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/KuiKui/Gitboard</pre>
-    </p>
-
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/KuiKui/Gitboard">KuiKui/Gitboard</a>
-    </div>
-
-  </div>
-
-  
-</body>
+  </body>
 </html>
