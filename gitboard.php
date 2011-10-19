@@ -375,7 +375,7 @@ function pflow_getopt($argv, $def)
 
     if (false !== $pos = strpos($def, $option))
     {
-      if (substr($def, $pos + 1, 1) == ':')
+      if (substr($def, $pos + 1, 1) == ':' && array_key_exists($i + 1, $args))
       {
         $options[$option] = $args[$i + 1];
       }
