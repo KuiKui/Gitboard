@@ -79,7 +79,7 @@ printf("\n");
 // Display no merger branches infos
 if(count($noMergedBranchesInfos) > 0)
 {
-  printf("\033[47;30m%-20s %-15s %-84s\033[0m\n", "No merged branches", "Current ahead", "Branch gap");
+  printf("\033[47;30m%-20s %-15s %-85s\033[0m\n", "No merged branches", "Current ahead", "Branch gap");
   printf("%-20s %-7s %-7s %-7s %-7s %s\n", "", "Commits", "Files", "Commits", "Files", "Last commit");
   
   foreach($noMergedBranchesInfos as $name => $noMergedBranche)
@@ -94,7 +94,7 @@ if(count($noMergedBranchesInfos) > 0)
       displayValue(date('d/m/y H\hi', strtotime($noMergedBranche['distantBranchAheadLastCommit']['date'])), 17, "0;33", false, date('d/m/y'));
       displayValue(limitText($noMergedBranche['distantBranchAheadLastCommit']['name'], 16), 17);
       displayValue($noMergedBranche['distantBranchAheadLastCommit']['hash'], 8);
-      displayValue(limitText($noMergedBranche['distantBranchAheadLastCommit']['message'], 26), 26, "0;36");
+      displayValue(limitText($noMergedBranche['distantBranchAheadLastCommit']['message'], 27), 27, "0;36");
     }
     printf("\n");
   }
