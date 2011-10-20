@@ -310,16 +310,12 @@ function usage()
 
 function limitText($str, $limit)
 {
-  $str = (extension_loaded('iconv')) ? iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $str) : $str;
-
-  if(strlen($str) <= $limit)
+  if(mb_strlen($str, 'UTF-8') <= $limit)
   {
-    return (extension_loaded('iconv')) ? iconv('ISO-8859-1', 'UTF-8', $str) : $str;
+    return $str;
   }
 
-  $result = substr($str, 0, $limit - 3).'...';
-
-  return (extension_loaded('iconv')) ? iconv('ISO-8859-1', 'UTF-8', $result) : $result;
+  return mb_substr($str, 0, $limit - 3, 'UTF-8' ).'...';
 }
 
 function displayValue($value, $padding = 0, $color = null, $onlyIfPositive = false, $onlyIfMatch = null)
