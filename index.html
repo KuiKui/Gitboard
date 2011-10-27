@@ -23,7 +23,7 @@
       <h2>Usage</h2>
       <pre>php gitboard.php</pre>
       or add this line to your git config file :
-      <pre>[alias]<br />board = "!sh -c 'php /path/to/gitboard/gitboard.php'"</pre>
+      <pre>[alias]<br />board = "!f() { php /path/to/gitboard/gitboard.php $@; }; f"</pre>
       and simply use :
       <pre>git board</pre>
 
