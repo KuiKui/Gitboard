@@ -30,4 +30,4 @@ Alias (git config file)
 -----------------------
 
 > [alias]  
-> board = "!sh -c 'php /path/to/gitboard/gitboard.php'"
+> board = "!f() { php /path/to/gitboard/gitboard.php $@; }; f"
