@@ -1,7 +1,4 @@
-Gitboard
---------
-
-Simple dashboard for a quick overview of Git projects
+Simple dashboard for a quick overview of Git projects.
 
 Usage
 -----
@@ -29,5 +26,5 @@ Example
 Alias (git config file)
 -----------------------
 
-> [alias]  
-> board = "!f() { php /path/to/gitboard/gitboard.php $@; }; f"
+    [alias]  
+      board = "!f() { php /path/to/gitboard/gitboard.php $@; }; f"
