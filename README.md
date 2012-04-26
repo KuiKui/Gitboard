@@ -8,13 +8,13 @@ php gitboard.php
 Options
 -------
 
--d <project directory> : like --git-dir  
--i : number of last days/hours/minutes  
--c : number of last commits  
--h : help  
--v : version  
---no-merged-branch : no merged branches infos  
---no-stat : no statistic  
+`-d` <project directory> : like --git-dir  
+`-i` : number of last days/hours/minutes  
+`-c` : number of last commits  
+`-h` : help  
+`-v` : version  
+`--no-merged-branch` : no merged branches infos  
+`--no-stat` : no statistic  
 
 Example
 -------
