@@ -3,6 +3,7 @@
 //---------------
 // Default values
 //---------------
+date_default_timezone_set('America/New_York');
 $version = '0.1';
 $gitDir = $_SERVER["PWD"];
 $iteration = 15;
