@@ -1,5 +1,6 @@
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-32757022-1']);
+_gaq.push(['_setDomainName', 'gitboard.net']);
 _gaq.push(['_trackPageview']);
 (function() {
   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
