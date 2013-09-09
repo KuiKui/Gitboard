@@ -1,0 +1,78 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__.'/vendor/autoload.php';
+
+
+$compiler = new Compiler();
+$compiler->compile();
+
+
+/**
+ * The Compiler class compiles the Goutte utility.
+ *
+ * @author Fabien Potencier <fabien@symfony.com>
+ */
+class Compiler
+{
+    public function compile($pharFile = 'gitboard.phar')
+    {
+        if (file_exists($pharFile)) {
+            unlink($pharFile);
+        }
+
+        $phar = new \Phar($pharFile, 0, 'Gitboard');
+        $phar->setSignatureAlgorithm(\Phar::SHA1);
+
+        $phar->startBuffering();
+
+        // CLI Component files
+        foreach ($this->getFiles() as $file) {
+            $path = str_replace(__DIR__.'/', '', $file);
+            $phar->addFromString($path, file_get_contents($file));
+        }
+
+        // Stubs
+        $phar['_cli_stub.php'] = $this->getCliStub();
+        $phar['_web_stub.php'] = $this->getWebStub();
+        $phar->setDefaultStub('_cli_stub.php', '_web_stub.php');
+
+        $phar->stopBuffering();
+
+        unset($phar);
+    }
+
+    protected function getCliStub()
+    {
+        return "<?php ".$this->getLicense()." require_once __DIR__.'/vendor/autoload.php'; require_once __DIR__.'/gitboard.php'; __HALT_COMPILER();";
+    }
+
+    protected function getWebStub()
+    {
+        return "<?php throw new \LogicException('This PHAR file can only be used from the CLI.'); __HALT_COMPILER();";
+    }
+
+    protected function getLicense()
+    {
+        return '
+    /*
+     * Simple dashboard for a quick overview of Git projects.
+     */';
+    }
+
+    protected function getFiles()
+    {
+        $files = array(
+            'gitboard.php',
+            'vendor/autoload.php',
+            'vendor/composer/autoload_real.php',
+            'vendor/composer/autoload_namespaces.php',
+            'vendor/composer/autoload_classmap.php',
+            'vendor/composer/ClassLoader.php',
+            'vendor/sensiolabs/ansi-to-html/SensioLabs/AnsiConverter/AnsiToHtmlConverter.php',
+            'vendor/sensiolabs/ansi-to-html/SensioLabs/AnsiConverter/Theme/Theme.php'
+        );
+
+        return $files;
+    }
+}
