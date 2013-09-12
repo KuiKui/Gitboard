@@ -11,20 +11,20 @@ $iteration = 15;
 $nbCommits = 10;
 $displayNoMergedBranches = true;
 $displayStats = true;
-$displayWeb = false;
+$converter = false;
 
 //--------
 // Options
 //--------
 $options = pflow_getopt( $argv, 'd:i:c:h:v:no-stat:no-merged-branch:display-web');
 if(isset($options['h'])) {usage(); exit(); }
-if(isset($options['v'])) {outputf("%s\n", $version); exit(); }
+if(isset($options['v'])) {outputf($converter, "%s\n", $version); exit(); }
 if(isset($options['d']) && $options['d']!==false) {$gitDir = $options['d'];}
 if(isset($options['i']) && $options['i']!==false && is_numeric($options['i'])) {$iteration = $options['i'];}
 if(isset($options['c']) && $options['c']!==false && is_numeric($options['c'])) {$nbCommits = $options['c'];}
 if(isset($options['no-merged-branch'])) {$displayNoMergedBranches = false;}
 if(isset($options['no-stat'])) {$displayStats = false;}
-if(isset($options['display-web'])) {$displayWeb = true;}
+if(isset($options['display-web'])) {require_once __DIR__.'/vendor/autoload.php'; $converter = new AnsiToHtmlConverter();}
 
 //--------
 // Compute
@@ -40,11 +40,7 @@ $stats = ($displayStats) ? getStats($commits) : array();
 //--------
 // Display
 //--------
-if ($displayWeb) {
-    global $converter;
-    require_once __DIR__.'/vendor/autoload.php';
-    $converter = new AnsiToHtmlConverter();
-
+if ($converter) {
     echo '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head></head><body><pre style="background-color: black; overflow: auto; padding: 10px 15px; font-family: monospace;color:#fff">';
 } else {
     passthru("tput clear");
@@ -52,87 +48,87 @@ if ($displayWeb) {
 
 
 // Display project infos
-outputf("\033[0;32mProject\033[0m: %s\n", $gitDir);
-outputf("\033[0;32mCurrent branch\033[0m: %s\n", $currentBranch);
-outputf("\033[0;32mCurrent date\033[0m: %s\n", date('d/m/Y H:i:s'));
-outputf("\n");
+outputf($converter, "\033[0;32mProject\033[0m: %s\n", $gitDir);
+outputf($converter, "\033[0;32mCurrent branch\033[0m: %s\n", $currentBranch);
+outputf($converter, "\033[0;32mCurrent date\033[0m: %s\n", date('d/m/Y H:i:s'));
+outputf($converter, "\n");
 
 // Display time-report
-outputf("\033[47;30m%-23s\033[0m%-12s\033[47;30m%-23s\033[0m%-12s\033[47;30m%-23s\033[0m\n", "Last $iteration days", "", "Last $iteration hours", "", "Last $iteration minutes");
-outputf("%-8s %-8s %-16s %-8s %-8s %-16s %-8s %-8s %s\n", "Date", "Commits", "Files", "Hour", "Commits", "Files", "Hour", "Commits", "Files");
+outputf($converter, "\033[47;30m%-23s\033[0m%-12s\033[47;30m%-23s\033[0m%-12s\033[47;30m%-23s\033[0m\n", "Last $iteration days", "", "Last $iteration hours", "", "Last $iteration minutes");
+outputf($converter, "%-8s %-8s %-16s %-8s %-8s %-16s %-8s %-8s %s\n", "Date", "Commits", "Files", "Hour", "Commits", "Files", "Hour", "Commits", "Files");
 
 for($i = 0; $i < $iteration; $i++)
 {
-    displayValue($lastDaysInfos[$i]['displayDate'], 9);
-    displayValue($lastDaysInfos[$i]['nb-commits'], 9, "0;33", true);
-    displayValue($lastDaysInfos[$i]['nb-files'], 17, "0;33", true);
-    displayValue($lastHoursInfos[$i]['displayDate'], 9);
-    displayValue($lastHoursInfos[$i]['nb-commits'], 9, "0;33", true);
-    displayValue($lastHoursInfos[$i]['nb-files'], 17, "0;33", true);
-    displayValue($lastMinutesInfos[$i]['displayDate'], 9);
-    displayValue($lastMinutesInfos[$i]['nb-commits'], 9, "0;33", true);
-    displayValue($lastMinutesInfos[$i]['nb-files'], 0, "0;33", true);
-    outputf("\n");
+    displayValue($converter, $lastDaysInfos[$i]['displayDate'], 9);
+    displayValue($converter, $lastDaysInfos[$i]['nb-commits'], 9, "0;33", true);
+    displayValue($converter, $lastDaysInfos[$i]['nb-files'], 17, "0;33", true);
+    displayValue($converter, $lastHoursInfos[$i]['displayDate'], 9);
+    displayValue($converter, $lastHoursInfos[$i]['nb-commits'], 9, "0;33", true);
+    displayValue($converter, $lastHoursInfos[$i]['nb-files'], 17, "0;33", true);
+    displayValue($converter, $lastMinutesInfos[$i]['displayDate'], 9);
+    displayValue($converter, $lastMinutesInfos[$i]['nb-commits'], 9, "0;33", true);
+    displayValue($converter, $lastMinutesInfos[$i]['nb-files'], 0, "0;33", true);
+    outputf($converter, "\n");
 }
-outputf("\n");
+outputf($converter, "\n");
 
 // Display commit-report
-outputf("\033[47;30m%-113s%-9s\033[0m\n", "Last $nbCommits commits (within the last $iteration days)", "Files");
+outputf($converter, "\033[47;30m%-113s%-9s\033[0m\n", "Last $nbCommits commits (within the last $iteration days)", "Files");
 for($i = 0; $i < $nbCommits; $i++)
 {
     if(!isset($commits[$i])) continue;
-    displayValue(date('d/m/y H\hi', strtotime($commits[$i]['date'])), 17, "0;33", false, date('d/m/y'));
-    displayValue(limitText($commits[$i]['name'], 16), 17);
-    displayValue($commits[$i]['hash'], 8);
-    displayValue(limitText($commits[$i]['message'], 70), 71, "0;36");
-    displayValue(count($commits[$i]['files']), 9);
-    outputf("\n");
+    displayValue($converter, date('d/m/y H\hi', strtotime($commits[$i]['date'])), 17, "0;33", false, date('d/m/y'));
+    displayValue($converter, limitText($commits[$i]['name'], 16), 17);
+    displayValue($converter, $commits[$i]['hash'], 8);
+    displayValue($converter, limitText($commits[$i]['message'], 70), 71, "0;36");
+    displayValue($converter, count($commits[$i]['files']), 9);
+    outputf($converter, "\n");
 }
-outputf("\n");
+outputf($converter, "\n");
 
 // Display no merger branches infos
 if(count($noMergedBranchesInfos) > 0)
 {
-    outputf("\033[47;30m%-20s %-15s %-85s\033[0m\n", "No merged branches", "Ahead", "Behind");
-    outputf("%-20s %-7s %-7s %-7s %-7s %s\n", "", "Commits", "Files", "Commits", "Files", "Last commit");
+    outputf($converter, "\033[47;30m%-20s %-15s %-85s\033[0m\n", "No merged branches", "Ahead", "Behind");
+    outputf($converter, "%-20s %-7s %-7s %-7s %-7s %s\n", "", "Commits", "Files", "Commits", "Files", "Last commit");
 
     foreach($noMergedBranchesInfos as $name => $noMergedBranche)
     {
-        displayValue(limitText($name, 20), 21);
-        displayValue($noMergedBranche['distantBranchAheadCommits'], 8, "0;33", true);
-        displayValue($noMergedBranche['distantBranchAheadFiles'], 8, "0;33", true);
-        displayValue($noMergedBranche['currentBranchAheadCommits'], 8, "0;33", true);
-        displayValue($noMergedBranche['currentBranchAheadFiles'], 8, "0;33", true);
+        displayValue($converter, limitText($name, 20), 21);
+        displayValue($converter, $noMergedBranche['distantBranchAheadCommits'], 8, "0;33", true);
+        displayValue($converter, $noMergedBranche['distantBranchAheadFiles'], 8, "0;33", true);
+        displayValue($converter, $noMergedBranche['currentBranchAheadCommits'], 8, "0;33", true);
+        displayValue($converter, $noMergedBranche['currentBranchAheadFiles'], 8, "0;33", true);
         if(isset($noMergedBranche['distantBranchAheadLastCommit']))
         {
-            displayValue(date('d/m/y H\hi', strtotime($noMergedBranche['distantBranchAheadLastCommit']['date'])), 17, "0;33", false, date('d/m/y'));
-            displayValue(limitText($noMergedBranche['distantBranchAheadLastCommit']['name'], 16), 17);
-            displayValue($noMergedBranche['distantBranchAheadLastCommit']['hash'], 8);
-            displayValue(limitText($noMergedBranche['distantBranchAheadLastCommit']['message'], 27), 27, "0;36");
+            displayValue($converter, date('d/m/y H\hi', strtotime($noMergedBranche['distantBranchAheadLastCommit']['date'])), 17, "0;33", false, date('d/m/y'));
+            displayValue($converter, limitText($noMergedBranche['distantBranchAheadLastCommit']['name'], 16), 17);
+            displayValue($converter, $noMergedBranche['distantBranchAheadLastCommit']['hash'], 8);
+            displayValue($converter, limitText($noMergedBranche['distantBranchAheadLastCommit']['message'], 27), 27, "0;36");
         }
-        outputf("\n");
+        outputf($converter, "\n");
     }
-    outputf("\n");
+    outputf($converter, "\n");
 }
 
 // Display stats infos
 if(count($stats))
 {
-    outputf("\033[47;30m%-122s\033[0m\n", "Stats for the last ".count($commits)." commits (within the last $iteration days)");
-    outputf("%-20s %-20s %-20s %s\n", "", "Commits", "Files", "");
+    outputf($converter, "\033[47;30m%-122s\033[0m\n", "Stats for the last ".count($commits)." commits (within the last $iteration days)");
+    outputf($converter, "%-20s %-20s %-20s %s\n", "", "Commits", "Files", "");
     foreach($stats as $committer => $stat)
     {
-        displayValue(limitText($stat['name'], 20), 21);
-        displayValue($stat['totalCommits'], 8, "0;33");
-        displayValue($stat['percentCommits'].'%', 13);
-        displayValue($stat['totalFiles'], 8, "0;33");
-        displayValue($stat['percentFiles'].'%', 13);
-        displayValue(limitText($committer, 39), 40);
-        outputf("\n");
+        displayValue($converter, limitText($stat['name'], 20), 21);
+        displayValue($converter, $stat['totalCommits'], 8, "0;33");
+        displayValue($converter, $stat['percentCommits'].'%', 13);
+        displayValue($converter, $stat['totalFiles'], 8, "0;33");
+        displayValue($converter, $stat['percentFiles'].'%', 13);
+        displayValue($converter, limitText($committer, 39), 40);
+        outputf($converter, "\n");
     }
-    outputf("\n");
+    outputf($converter, "\n");
 }
-if ($displayWeb) {
+if ($converter) {
     echo '</pre></body></html>';
 }
 //----------
@@ -140,24 +136,19 @@ if ($displayWeb) {
 //----------
 function outputf()
 {
-    global $displayWeb;
-
     $args = func_get_args();
-
-    if ($displayWeb) {
-        global $converter;
+    $converter = $args[0];
+    array_shift($args);
+    if ($converter) {
         echo $converter->convert(call_user_func_array("sprintf",$args));
 
     } else {
         call_user_func_array("printf",$args);
     }
 }
-function output($str)
+function output($converter, $str)
 {
-    global $displayWeb;
-
-    if ($displayWeb) {
-        global $converter;
+    if ($converter) {
         echo $converter->convert($str);
     } else {
         echo $str;
@@ -337,7 +328,7 @@ function getCommitFromLine($line, $separator)
 
 function usage()
 {
-    outputf("Gitboard : simple git dashboard.
+    outputf(false, "Gitboard : simple git dashboard.
 -d <project directory> : like --git-dir
 -i : number of last days/hours/minutes
 -c : number of last commits
@@ -358,7 +349,7 @@ function limitText($str, $limit)
     return mb_substr($str, 0, $limit - 3, 'UTF-8' ).'...';
 }
 
-function displayValue($value, $padding = 0, $color = null, $onlyIfPositive = false, $onlyIfMatch = null)
+function displayValue($converter, $value, $padding = 0, $color = null, $onlyIfPositive = false, $onlyIfMatch = null)
 {
     $positive = (is_numeric($value) && $value > 0);
     $displayColor = (!is_null($color) && (!$onlyIfPositive || ($onlyIfPositive && $positive)) && (is_null($onlyIfMatch) || (!is_null($onlyIfMatch) && strpos($value, $onlyIfMatch) !== false)));
@@ -383,7 +374,7 @@ function displayValue($value, $padding = 0, $color = null, $onlyIfPositive = fal
         $output .= sprintf("\033[0m");
     }
 
-    output($output);
+    output($converter, $output);
 }
 
 function utf_8_sprintf ()
