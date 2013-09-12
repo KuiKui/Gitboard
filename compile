@@ -20,7 +20,8 @@ class Compiler
         if (file_exists($pharFile)) {
             unlink($pharFile);
         }
-
+        $shebang = "#!/usr/bin/env php\n";
+        file_put_contents("gitboard.php",str_replace($shebang,"",file_get_contents("gitboard.php")));
         $phar = new \Phar($pharFile, 0, 'Gitboard');
         $phar->setSignatureAlgorithm(\Phar::SHA1);
 
@@ -38,7 +39,8 @@ class Compiler
         $phar->setDefaultStub('_cli_stub.php', '_web_stub.php');
 
         $phar->stopBuffering();
-
+        file_put_contents("gitboard.php",$shebang.file_get_contents("gitboard.php"));
+        
         unset($phar);
     }
 

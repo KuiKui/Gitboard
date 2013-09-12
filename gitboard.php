@@ -41,6 +41,10 @@ $stats = ($displayStats) ? getStats($commits) : array();
 // Display
 //--------
 if ($displayWeb) {
+    global $converter;
+    require_once __DIR__.'/vendor/autoload.php';
+    $converter = new AnsiToHtmlConverter();
+
     echo '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head></head><body><pre style="background-color: black; overflow: auto; padding: 10px 15px; font-family: monospace;color:#fff">';
 } else {
     passthru("tput clear");
@@ -137,26 +141,24 @@ if ($displayWeb) {
 function outputf()
 {
     global $displayWeb;
+
     $args = func_get_args();
 
     if ($displayWeb) {
-        require_once __DIR__.'/vendor/autoload.php';
-        $converter = new AnsiToHtmlConverter();
+        global $converter;
         echo $converter->convert(call_user_func_array("sprintf",$args));
 
     } else {
-
         call_user_func_array("printf",$args);
     }
 }
 function output($str)
 {
     global $displayWeb;
-    if ($displayWeb) {
-        require_once __DIR__.'/vendor/autoload.php';
-        $converter = new AnsiToHtmlConverter();
-        echo $converter->convert($str);
 
+    if ($displayWeb) {
+        global $converter;
+        echo $converter->convert($str);
     } else {
         echo $str;
     }
