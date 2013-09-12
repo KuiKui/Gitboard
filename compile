@@ -9,9 +9,9 @@ $compiler->compile();
 
 
 /**
- * The Compiler class compiles the Goutte utility.
- *
- * @author Fabien Potencier <fabien@symfony.com>
+ * The Compiler class compiles the Gitboard utility.
+ * Heavily based on Goutte compiler
+ * @author André Cianfarani <acianfa@gmail.com>
  */
 class Compiler
 {
@@ -40,7 +40,7 @@ class Compiler
 
         $phar->stopBuffering();
         file_put_contents("gitboard.php",$shebang.file_get_contents("gitboard.php"));
-        
+
         unset($phar);
     }
 
