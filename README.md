@@ -3,7 +3,7 @@ Simple dashboard for a quick overview of Git projects.
 Usage
 -----
 
-php gitboard.php
+php gitboard.phar
 
 Options
 -------
@@ -14,12 +14,14 @@ Options
 `-h` : help  
 `-v` : version  
 `--no-merged-branch` : no merged branches infos  
-`--no-stat` : no statistic  
+`--no-stat` : no statistic
+`--display-web` : convert ansi output to html
 
 Example
 -------
 
-    php gitboard.php -d=../node --no-merged-branch
+    php gitboard.phar -d=../node --no-merged-branch
+    php gitboard.phar -d=../node --display-web > gitboard.html
 
 ![Gitboard](https://lh5.googleusercontent.com/-A2ZveUUbwCc/Tn3MwQDyzDI/AAAAAAAAAuc/ynkxbkdjyzs/s640/Gitboard.png "Gitboard example")
 
