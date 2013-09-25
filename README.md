@@ -29,4 +29,4 @@ Alias (git config file)
 -----------------------
 
     [alias]  
-      board = "!f() { php /path/to/gitboard/gitboard.php $@; }; f"
+      board = "!f() { php /path/to/gitboard/gitboard.phar $@; }; f"
