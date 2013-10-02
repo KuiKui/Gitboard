@@ -1,4 +1,16 @@
 {
+    "name": "kuikui/gitboard",
+    "description": "Simple dashboard for a quick overview of Git projects.",
+    "keywords": ["git", "dashboard"],
+    "homepage": "http://gitboard.net",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Denis Roussel",
+            "email": "denis.roussel@gmail.com",
+            "homepage": "http://denisroussel.fr"
+        }
+    ],
     "require": {
         "sensiolabs/ansi-to-html": "dev-master"
     }
