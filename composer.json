@@ -14,8 +14,11 @@
     "bin": [
         "bin/gitboard"
     ],
+    "autoload": {
+        "psr-0": { "Gitboard": "src/" }
+    },
     "require": {
         "sensiolabs/ansi-to-html": "dev-master",
-        "symfony/command": "~2.3"
+        "symfony/console": "2.4.*@dev"
     }
 }
