@@ -11,7 +11,11 @@
             "homepage": "http://denisroussel.fr"
         }
     ],
+    "bin": [
+        "bin/gitboard"
+    ],
     "require": {
-        "sensiolabs/ansi-to-html": "dev-master"
+        "sensiolabs/ansi-to-html": "dev-master",
+        "symfony/command": "~2.3"
     }
 }
