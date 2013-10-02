@@ -1,14 +1,13 @@
 {
-    "name": "kuikui/gitboard",
+    "name": "nifr/gitboard",
     "description": "Simple dashboard for a quick overview of Git projects.",
     "keywords": ["git", "dashboard"],
-    "homepage": "http://gitboard.net",
+    "homepage": "http://nifr.de",
     "license": "MIT",
     "authors": [
         {
-            "name": "Denis Roussel",
-            "email": "denis.roussel@gmail.com",
-            "homepage": "http://denisroussel.fr"
+            "name": "Nicolai Fröhlich",
+            "homepage": "http://nifr.de"
         }
     ],
     "bin": [
