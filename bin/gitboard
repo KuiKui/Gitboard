@@ -1,12 +1,28 @@
 #!/usr/bin/env php
-
 <?php
+
+// inspired by composer's bin/composer 
+// @see https://github.com/composer/composer/blob/master/bin/composer
 
 if (PHP_SAPI !== 'cli') {
     echo 'Warning: Gitboard should be invoked via the CLI version of PHP, not the '.PHP_SAPI.' SAPI'.PHP_EOL;
 }
 
-require __DIR__.'/../vendor/autoload.php';
+// begin bootstrap - inspired by composer's bootstrap
+// @see https://github.com/composer/composer/blob/master/src/bootstrap.php
+function includeIfExists($file)
+{
+    return file_exists($file) ? include $file : false;
+}
+
+if ((!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) && (!$loader = includeIfExists(__DIR__.'/../../../autoload.php'))) {
+    echo 'You must set up the project dependencies, run the following commands:'.PHP_EOL.
+        'curl -sS https://getcomposer.org/installer | php'.PHP_EOL.
+        'php composer.phar install'.PHP_EOL;
+    exit(1);
+}
+
+// end bootstrap
 
 use Gitboard\Console\Application;
 
