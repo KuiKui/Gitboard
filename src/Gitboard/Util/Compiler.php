@@ -1,12 +1,6 @@
-#!/usr/bin/env php
 <?php
 
-require_once __DIR__.'/vendor/autoload.php';
-
-
-$compiler = new Compiler();
-$compiler->compile();
-
+namespace Gitboard\Util;
 
 /**
  * The Compiler class compiles the Gitboard utility.

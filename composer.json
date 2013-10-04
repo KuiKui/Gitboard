@@ -1,5 +1,23 @@
 {
+    "name": "nifr/gitboard-advanced",
+    "description": "Simple dashboard for a quick overview of Git projects.",
+    "keywords": ["git", "dashboard"],
+    "homepage": "http://nifr.de",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolai Fröhlich",
+            "homepage": "http://nifr.de"
+        }
+    ],
+    "bin": [
+        "bin/gitboard"
+    ],
+    "autoload": {
+        "psr-0": { "Gitboard": "src/" }
+    },
     "require": {
-        "sensiolabs/ansi-to-html": "dev-master"
+        "sensiolabs/ansi-to-html": "dev-master",
+        "symfony/console": "2.4.*@dev"
     }
 }
