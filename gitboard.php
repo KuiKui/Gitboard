@@ -13,6 +13,15 @@ $displayNoMergedBranches = true;
 $displayStats = true;
 $converter = false;
 
+
+//-------------------
+// Check requirements
+//-------------------
+if (!extension_loaded('iconv'))
+{
+  exit('iconv extension not loaded' . PHP_EOL);
+}
+
 //--------
 // Options
 //--------
